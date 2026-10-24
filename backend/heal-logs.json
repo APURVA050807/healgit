@@ -1,0 +1,143 @@
+[
+  {
+    "id": "1792869641560",
+    "timestamp": "2026-10-24T19:20:41.560Z",
+    "fileName": "test-buggy.js",
+    "status": "Auto-Healed",
+    "hadBugs": true,
+    "healed": true,
+    "attemptsUsed": 1,
+    "errorCount": 3,
+    "errors": [
+      {
+        "line": 3,
+        "column": 20,
+        "message": "'verifyPromoCodeDiscount' is not defined.",
+        "ruleId": "no-undef"
+      },
+      {
+        "line": 6,
+        "column": 20,
+        "message": "'convertUsdToInr' is not defined.",
+        "ruleId": "no-undef"
+      },
+      {
+        "line": 11,
+        "column": 3,
+        "message": "Unreachable code.",
+        "ruleId": "no-unreachable"
+      }
+    ],
+    "explanation": "Implemented missing functions 'verifyPromoCodeDiscount' and 'convertUsdToInr', and moved the unreachable console.log statement before the return statement.",
+    "brokenCode": "function calculateSubscription(planPrice, promoCode) {\n  // Bug 1: Hallucinated promo validator\n  const discount = verifyPromoCodeDiscount(promoCode);\n\n  // Bug 2: Hallucinated currency converter\n  const finalInr = convertUsdToInr(planPrice - discount);\n\n  return finalInr;\n\n  // Bug 3: Unreachable logging code\n  console.log(\"Subscription activated:\", finalInr);\n}\n\ncalculateSubscription(99, \"STUDENT50\");",
+    "healedCode": "function verifyPromoCodeDiscount(promoCode) {\n  if (promoCode === \"STUDENT50\") {\n    return 50;\n  }\n  return 0;\n}\n\nfunction convertUsdToInr(usdAmount) {\n  const exchangeRate = 83;\n  return usdAmount * exchangeRate;\n}\n\nfunction calculateSubscription(planPrice, promoCode) {\n  // Bug 1: Hallucinated promo validator\n  const discount = verifyPromoCodeDiscount(promoCode);\n\n  // Bug 2: Hallucinated currency converter\n  const finalInr = convertUsdToInr(planPrice - discount);\n\n  // Bug 3: Unreachable logging code\n  console.log(\"Subscription activated:\", finalInr);\n\n  return finalInr;\n}\n\ncalculateSubscription(99, \"STUDENT50\");"
+  },
+  {
+    "id": "1792869557603",
+    "timestamp": "2026-10-24T19:19:17.603Z",
+    "fileName": "test-buggy.js",
+    "status": "Auto-Healed",
+    "hadBugs": true,
+    "healed": true,
+    "attemptsUsed": 1,
+    "errorCount": 3,
+    "errors": [
+      {
+        "line": 3,
+        "column": 20,
+        "message": "'verifyPromoCodeDiscount' is not defined.",
+        "ruleId": "no-undef"
+      },
+      {
+        "line": 6,
+        "column": 20,
+        "message": "'convertUsdToInr' is not defined.",
+        "ruleId": "no-undef"
+      },
+      {
+        "line": 11,
+        "column": 3,
+        "message": "Unreachable code.",
+        "ruleId": "no-unreachable"
+      }
+    ],
+    "explanation": "Implemented missing helper functions `verifyPromoCodeDiscount` and `convertUsdToInr`, and moved the unreachable log statement before the return statement.",
+    "brokenCode": "function calculateSubscription(planPrice, promoCode) {\n  // Bug 1: Hallucinated promo validator\n  const discount = verifyPromoCodeDiscount(promoCode);\n\n  // Bug 2: Hallucinated currency converter\n  const finalInr = convertUsdToInr(planPrice - discount);\n\n  return finalInr;\n\n  // Bug 3: Unreachable logging code\n  console.log(\"Subscription activated:\", finalInr);\n}\n\ncalculateSubscription(99, \"STUDENT50\");",
+    "healedCode": "function verifyPromoCodeDiscount(promoCode) {\n  if (promoCode === \"STUDENT50\") {\n    return 50;\n  }\n  return 0;\n}\n\nfunction convertUsdToInr(usdAmount) {\n  const exchangeRate = 83;\n  return usdAmount * exchangeRate;\n}\n\nfunction calculateSubscription(planPrice, promoCode) {\n  // Bug 1: Hallucinated promo validator\n  const discount = verifyPromoCodeDiscount(promoCode);\n\n  // Bug 2: Hallucinated currency converter\n  const finalInr = convertUsdToInr(planPrice - discount);\n\n  // Bug 3: Unreachable logging code\n  console.log(\"Subscription activated:\", finalInr);\n\n  return finalInr;\n}\n\ncalculateSubscription(99, \"STUDENT50\");"
+  },
+  {
+    "id": "1792869512441",
+    "timestamp": "2026-10-24T19:18:32.441Z",
+    "fileName": "test-buggy.js",
+    "status": "Circuit Breaker Rollback",
+    "hadBugs": true,
+    "healed": false,
+    "attemptsUsed": 3,
+    "errorCount": 3,
+    "errors": [
+      {
+        "line": 3,
+        "column": 20,
+        "message": "'verifyPromoCodeDiscount' is not defined.",
+        "ruleId": "no-undef"
+      },
+      {
+        "line": 6,
+        "column": 20,
+        "message": "'convertUsdToInr' is not defined.",
+        "ruleId": "no-undef"
+      },
+      {
+        "line": 11,
+        "column": 3,
+        "message": "Unreachable code.",
+        "ruleId": "no-unreachable"
+      }
+    ],
+    "explanation": "Circuit breaker triggered — rolled back to original code",
+    "brokenCode": "function calculateSubscription(planPrice, promoCode) {\n  // Bug 1: Hallucinated promo validator\n  const discount = verifyPromoCodeDiscount(promoCode);\n\n  // Bug 2: Hallucinated currency converter\n  const finalInr = convertUsdToInr(planPrice - discount);\n\n  return finalInr;\n\n  // Bug 3: Unreachable logging code\n  console.log(\"Subscription activated:\", finalInr);\n}\n\ncalculateSubscription(99, \"STUDENT50\");",
+    "healedCode": "function calculateSubscription(planPrice, promoCode) {\n  // Bug 1: Hallucinated promo validator\n  const discount = verifyPromoCodeDiscount(promoCode);\n\n  // Bug 2: Hallucinated currency converter\n  const finalInr = convertUsdToInr(planPrice - discount);\n\n  return finalInr;\n\n  // Bug 3: Unreachable logging code\n  console.log(\"Subscription activated:\", finalInr);\n}\n\ncalculateSubscription(99, \"STUDENT50\");"
+  },
+  {
+    "id": "1792869424163",
+    "timestamp": "2026-10-24T19:17:04.163Z",
+    "fileName": "test-buggy.js",
+    "status": "Verified Clean",
+    "hadBugs": false,
+    "healed": true,
+    "attemptsUsed": 0,
+    "errorCount": 0,
+    "errors": [],
+    "explanation": "Verified clean — 0 deterministic errors",
+    "brokenCode": "function validateUserSessionToken(token) {\n  return typeof token === \"string\" && token.length > 0;\n}\n\nfunction applyGSTTax(amount, rate) {\n  return amount + amount * rate;\n}\n\nfunction processUserOrder(user, amount) {\n  // Bug 1: Hallucinated validator function that doesn't exist\n  const isValid = validateUserSessionToken(user.token);\n\n  if (!isValid) {\n    // Bug 2: Unreachable code after return\n    console.log(\"Failed login attempt for:\", user.name);\n    return \"Unauthorized\";\n  }\n\n  // Bug 3: Hallucinated tax helper function\n  const finalBill = applyGSTTax(amount, 0.18);\n  return finalBill;\n}\n\nconst hallucinatedDiscountVariable = 0;\n\nprocessUserOrder({ name: \"Apurva\", token: \"abc-123\" }, 500);\nconsole.log(hallucinatedDiscountVariable);",
+    "healedCode": "function validateUserSessionToken(token) {\n  return typeof token === \"string\" && token.length > 0;\n}\n\nfunction applyGSTTax(amount, rate) {\n  return amount + amount * rate;\n}\n\nfunction processUserOrder(user, amount) {\n  // Bug 1: Hallucinated validator function that doesn't exist\n  const isValid = validateUserSessionToken(user.token);\n\n  if (!isValid) {\n    // Bug 2: Unreachable code after return\n    console.log(\"Failed login attempt for:\", user.name);\n    return \"Unauthorized\";\n  }\n\n  // Bug 3: Hallucinated tax helper function\n  const finalBill = applyGSTTax(amount, 0.18);\n  return finalBill;\n}\n\nconst hallucinatedDiscountVariable = 0;\n\nprocessUserOrder({ name: \"Apurva\", token: \"abc-123\" }, 500);\nconsole.log(hallucinatedDiscountVariable);"
+  },
+  {
+    "id": "1792869422591",
+    "timestamp": "2026-10-24T19:17:02.591Z",
+    "fileName": "test-buggy.js",
+    "status": "Verified Clean",
+    "hadBugs": false,
+    "healed": true,
+    "attemptsUsed": 0,
+    "errorCount": 0,
+    "errors": [],
+    "explanation": "Verified clean — 0 deterministic errors",
+    "brokenCode": "function validateUserSessionToken(token) {\n  return typeof token === \"string\" && token.length > 0;\n}\n\nfunction applyGSTTax(amount, rate) {\n  return amount + amount * rate;\n}\n\nfunction processUserOrder(user, amount) {\n  // Bug 1: Hallucinated validator function that doesn't exist\n  const isValid = validateUserSessionToken(user.token);\n\n  if (!isValid) {\n    // Bug 2: Unreachable code after return\n    console.log(\"Failed login attempt for:\", user.name);\n    return \"Unauthorized\";\n  }\n\n  // Bug 3: Hallucinated tax helper function\n  const finalBill = applyGSTTax(amount, 0.18);\n  return finalBill;\n}\n\nconst hallucinatedDiscountVariable = 0;\n\nprocessUserOrder({ name: \"Apurva\", token: \"abc-123\" }, 500);\nconsole.log(hallucinatedDiscountVariable);",
+    "healedCode": "function validateUserSessionToken(token) {\n  return typeof token === \"string\" && token.length > 0;\n}\n\nfunction applyGSTTax(amount, rate) {\n  return amount + amount * rate;\n}\n\nfunction processUserOrder(user, amount) {\n  // Bug 1: Hallucinated validator function that doesn't exist\n  const isValid = validateUserSessionToken(user.token);\n\n  if (!isValid) {\n    // Bug 2: Unreachable code after return\n    console.log(\"Failed login attempt for:\", user.name);\n    return \"Unauthorized\";\n  }\n\n  // Bug 3: Hallucinated tax helper function\n  const finalBill = applyGSTTax(amount, 0.18);\n  return finalBill;\n}\n\nconst hallucinatedDiscountVariable = 0;\n\nprocessUserOrder({ name: \"Apurva\", token: \"abc-123\" }, 500);\nconsole.log(hallucinatedDiscountVariable);"
+  },
+  {
+    "id": "1792868259799",
+    "timestamp": "2026-10-24T18:57:39.799Z",
+    "fileName": "test-buggy.js",
+    "status": "Verified Clean",
+    "hadBugs": false,
+    "healed": true,
+    "attemptsUsed": 0,
+    "errorCount": 0,
+    "errors": [],
+    "explanation": "Verified clean — 0 deterministic errors",
+    "brokenCode": "function validateUserSessionToken(token) {\n  return typeof token === \"string\" && token.length > 0;\n}\n\nfunction applyGSTTax(amount, rate) {\n  return amount + amount * rate;\n}\n\nfunction processUserOrder(user, amount) {\n  // Bug 1: Hallucinated validator function that doesn't exist\n  const isValid = validateUserSessionToken(user.token);\n\n  if (!isValid) {\n    // Bug 2: Unreachable code after return\n    console.log(\"Failed login attempt for:\", user.name);\n    return \"Unauthorized\";\n  }\n\n  // Bug 3: Hallucinated tax helper function\n  const finalBill = applyGSTTax(amount, 0.18);\n  return finalBill;\n}\n\nconst hallucinatedDiscountVariable = 0;\n\nprocessUserOrder({ name: \"Apurva\", token: \"abc-123\" }, 500);\nconsole.log(hallucinatedDiscountVariable);",
+    "healedCode": "function validateUserSessionToken(token) {\n  return typeof token === \"string\" && token.length > 0;\n}\n\nfunction applyGSTTax(amount, rate) {\n  return amount + amount * rate;\n}\n\nfunction processUserOrder(user, amount) {\n  // Bug 1: Hallucinated validator function that doesn't exist\n  const isValid = validateUserSessionToken(user.token);\n\n  if (!isValid) {\n    // Bug 2: Unreachable code after return\n    console.log(\"Failed login attempt for:\", user.name);\n    return \"Unauthorized\";\n  }\n\n  // Bug 3: Hallucinated tax helper function\n  const finalBill = applyGSTTax(amount, 0.18);\n  return finalBill;\n}\n\nconst hallucinatedDiscountVariable = 0;\n\nprocessUserOrder({ name: \"Apurva\", token: \"abc-123\" }, 500);\nconsole.log(hallucinatedDiscountVariable);"
+  }
+]

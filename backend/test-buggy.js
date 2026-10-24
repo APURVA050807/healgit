@@ -1,24 +1,26 @@
-function validateUserSessionToken(token) {
-  return typeof token === "string" && token.length > 0;
-}
-
-function applyGSTTax(amount, rate) {
-  return amount + amount * rate;
-}
-
-function processUserOrder(user, amount) {
-  // Bug 1: Hallucinated validator function that doesn't exist
-  const isValid = validateUserSessionToken(user.token);
-
-  if (!isValid) {
-    // Bug 2: Unreachable code after return
-    console.log("Failed login attempt for:", user.name);
-    return "Unauthorized";
+function verifyPromoCodeDiscount(promoCode) {
+  if (promoCode === "STUDENT50") {
+    return 50;
   }
-
-  // Bug 3: Hallucinated tax helper function
-  const finalBill = applyGSTTax(amount, 0.18);
-  return finalBill;
+  return 0;
 }
 
-processUserOrder({ name: "Apurva", token: "abc-123" }, 500);
+function convertUsdToInr(usdAmount) {
+  const exchangeRate = 83;
+  return usdAmount * exchangeRate;
+}
+
+function calculateSubscription(planPrice, promoCode) {
+  // Bug 1: Hallucinated promo validator
+  const discount = verifyPromoCodeDiscount(promoCode);
+
+  // Bug 2: Hallucinated currency converter
+  const finalInr = convertUsdToInr(planPrice - discount);
+
+  // Bug 3: Unreachable logging code
+  console.log("Subscription activated:", finalInr);
+
+  return finalInr;
+}
+
+calculateSubscription(99, "STUDENT50");

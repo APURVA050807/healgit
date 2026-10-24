@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const { GoogleGenAI } = require("@google/genai");
 const { scanFile } = require("./scanController");
+const { saveHealLog } = require("./logController");
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -14,28 +15,25 @@ async function healFile(filePath, maxAttempts = 3) {
     return null;
   }
 
-  // 1. SAFETY BACKUP: Save the original code before AI touches anything
   const originalCode = fs.readFileSync(absolutePath, "utf-8");
   console.log(`🛡️  Backup created in memory for ${filePath}`);
 
   let attempt = 1;
   let initialErrors = [];
-  let lastExplanation = "No errors detected";
+  let lastExplanation = "Verified clean — 0 deterministic errors";
 
-  // 2. THE NEURO-SYMBOLIC LOOP (Max 3 tries)
   while (attempt <= maxAttempts) {
     console.log(`\n🔄 --- Verification Cycle ${attempt} of ${maxAttempts} ---`);
 
     const scanResult = await scanFile(filePath);
 
-    // Save the initial errors from Cycle 1 so we can log them to MongoDB later!
     if (attempt === 1 && !scanResult.passed) {
       initialErrors = scanResult.errors;
     }
 
     if (scanResult.passed) {
       console.log(`\n🎉 [SUCCESS] ${filePath} is verified clean on cycle ${attempt}!`);
-      return {
+      const finalReport = {
         fileName: path.basename(filePath),
         healed: true,
         hadBugs: attempt > 1,
@@ -45,6 +43,8 @@ async function healFile(filePath, maxAttempts = 3) {
         brokenCode: originalCode,
         healedCode: fs.readFileSync(absolutePath, "utf-8"),
       };
+      saveHealLog(finalReport);
+      return finalReport;
     }
 
     console.log(`🤖 Invoking AI Repair Engine to fix ${scanResult.errors.length} deterministic error(s)...`);
@@ -79,7 +79,7 @@ ${JSON.stringify(scanResult.errors, null, 2)}`;
           responseMimeType: "application/json",
           temperature: 0.1,
           thinkingConfig: {
-            thinkingLevel: "MINIMAL", // Makes Gemini 3.8 reply in ~3-5 seconds instead of 120s!
+            thinkingLevel: "LOW",
           },
         },
       });
@@ -98,11 +98,10 @@ ${JSON.stringify(scanResult.errors, null, 2)}`;
     attempt++;
   }
 
-  // 4. Final verification after the last attempt
   const finalCheck = await scanFile(filePath);
   if (finalCheck.passed) {
     console.log(`\n🎉 [SUCCESS] ${filePath} healed and verified on final check!`);
-    return {
+    const finalReport = {
       fileName: path.basename(filePath),
       healed: true,
       hadBugs: true,
@@ -112,14 +111,15 @@ ${JSON.stringify(scanResult.errors, null, 2)}`;
       brokenCode: originalCode,
       healedCode: fs.readFileSync(absolutePath, "utf-8"),
     };
+    saveHealLog(finalReport);
+    return finalReport;
   }
 
-  // 5. CIRCUIT BREAKER
   console.log(`\n🛑 [CIRCUIT BREAKER TRIGGERED] AI could not verify a clean fix after ${maxAttempts} attempts.`);
   console.log(`⏪ Rolling back ${filePath} to its original state to prevent corruption.`);
   fs.writeFileSync(absolutePath, originalCode, "utf-8");
 
-  return {
+  const failedReport = {
     fileName: path.basename(filePath),
     healed: false,
     hadBugs: true,
@@ -129,6 +129,8 @@ ${JSON.stringify(scanResult.errors, null, 2)}`;
     brokenCode: originalCode,
     healedCode: originalCode,
   };
+  saveHealLog(failedReport);
+  return failedReport;
 }
 
 module.exports = { healFile };
