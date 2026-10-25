@@ -1,26 +1,14 @@
-function verifyPromoCodeDiscount(promoCode) {
-  if (promoCode === "STUDENT50") {
-    return 50;
-  }
+function getPromoDiscount(promoCode) {
+  if (promoCode === "SAVE20") return 20;
   return 0;
 }
 
-function convertUsdToInr(usdAmount) {
-  const exchangeRate = 83;
-  return usdAmount * exchangeRate;
+function calculateOrderTotal(subtotal, promoCode) {
+  const discount = getPromoDiscount(promoCode);
+  const finalAmount = subtotal - discount;
+
+  console.log("Order processed for amount:", finalAmount);
+  return finalAmount;
 }
 
-function calculateSubscription(planPrice, promoCode) {
-  // Bug 1: Hallucinated promo validator
-  const discount = verifyPromoCodeDiscount(promoCode);
-
-  // Bug 2: Hallucinated currency converter
-  const finalInr = convertUsdToInr(planPrice - discount);
-
-  // Bug 3: Unreachable logging code
-  console.log("Subscription activated:", finalInr);
-
-  return finalInr;
-}
-
-calculateSubscription(99, "STUDENT50");
+calculateOrderTotal(1500, "SAVE20");
